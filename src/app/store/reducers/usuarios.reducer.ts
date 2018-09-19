@@ -1,6 +1,5 @@
 import { Usuario } from '../../models/usuario.model';
-import * as fromUsuarios from '../actios';
-import { CARGAR_USUARIOS_FAIL } from '../actios/usuarios.actions';
+import * as fromUsuarios from '../actions';
 
 export interface UsuariosState {
     users: Usuario[];
@@ -36,7 +35,11 @@ export function usuariosReducer(state = initState, action: fromUsuarios.usuarios
                 loading: false,
                 loaded: false,
                 users: [],
-                error: action.payload
+                error: {
+                    status: action.payload.status,
+                    message: action.payload.error,
+                    url: action.payload.url
+                }
             };
         default:
             return state;

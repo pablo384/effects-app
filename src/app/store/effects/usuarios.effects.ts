@@ -1,22 +1,28 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect } from '@ngrx/effects';
-import * as fromActions from '../actios';
-import { map } from 'rxjs/operators';
+import * as fromActions from '../actions';
+import { map, switchMap } from 'rxjs/operators';
+import { UsuarioService } from '../../services/usuario.service';
 
 @Injectable()
 export class UsuariosEffects {
     constructor(
-        private actions$: Actions
+        private actions$: Actions,
+        public usuariosS: UsuarioService
     ) { }
 
-    @Effect({dispatch: false})
+    @Effect()
     cargarUsuarios$ = this.actions$
         .ofType(fromActions.CARGAR_USUARIOS)
         .pipe(
-            map(action => {
-                console.log(action);
-                return action;
-            })
+            switchMap(
+                () => {
+                    return this.usuariosS.getUsers()
+                    .pipe(
+                        map(users => new fromActions.CargarUsuariosSuccess(users))
+                    );
+                }
+            )
         );
 }
 
